@@ -1,0 +1,397 @@
+{
+  "name": "RateCard",
+  "nodes": [
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://apis.delcaper.com/fulfillment/rate-card/calculate-rate/ecomm",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"deliveryPromise\": \"{{ $('Volumetric Weight').item.json.deliveryPromise }}\",\n  \"fromPincode\": {{ $('When Executed by Another Workflow').item.json.toPincode }},\n  \"toPincode\": {{ $('When Executed by Another Workflow').item.json.toPincode }},\n  \"weight\": {{$json.weight || 125}},\n  \"length\": {{$json.length || 20}},\n  \"width\": {{$json.width || 20}},\n  \"height\": {{$json.height || 20}},\n  \"volumatricWeight\": {{$json.volumetricWeight || 0}}\n}",
+        "headerParametersJson": "={\n    \"Content-Type\": \"application/json\",\n    \"Authorization\": \"Bearer {{ $json.body.data.accessToken }}\"\n}"
+      },
+      "id": "e0505604-5985-4f49-bfff-cc3a11420f67",
+      "name": "Call Delcaper API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        520,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const data = $json.data;\n\nreturn [{json: {\n  \"status\": 200,\n  \"data\": {\n    \"shippingCharge\": 81.95,\n    \"volumatricWeight\": 1600,\n    \"sellerActiveRateCardId\": \"648aa2b0b7d883986cb966b6\",\n    \"appliedRate\": {\n      \"minWeight\": \"1.5\",\n      \"maxWeight\": \"2\",\n      \"label\": \"1.5 - 2 kgs\",\n      \"localRate\": \"52.8\",\n      \"zoneRate\": \"62.15\",\n      \"metroRate\": \"81.95\",\n      \"roiRate\": \"94.6\",\n      \"neJKRate\": \"138.6\"\n    },\n    \"appliedZone\": {\n      \"Weight\": 125,\n      \"FreightCharge\": 40,\n      \"ServiceType\": \"Standard\",\n      \"TravelType\": \"Surface\",\n      \"DocType\": \"Dox\",\n      \"MappingValue\": \"Metro\"\n    },\n    \"fuelCharges\": 0\n  }\n}}]\n// return [{\n//   json: {\n//     message: `Shipping charge is ₹${data.shippingCharge} for weight ${data.appliedZone.Weight} grams. Zone: ${data.appliedZone.MappingValue}.`\n//   }\n// }];"
+      },
+      "id": "baf587ed-296c-49e5-b8fb-162aa5e2c94f",
+      "name": "Format Response1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        300,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "fromPincode"
+            },
+            {
+              "name": "toPincode"
+            },
+            {
+              "name": "height"
+            },
+            {
+              "name": "width"
+            },
+            {
+              "name": "length"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        -80
+      ],
+      "id": "0f0d213f-0b9a-4d4e-9389-1878f112af32",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://apis.delcaper.com/auth/login",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"email\": \"vaibhav.kharatmal@shreemaruti.com\",\n  \"password\": \"MWywx7260Y$%\",\n  \"vendorType\":\"SELLER\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        280
+      ],
+      "id": "421089b6-e2fa-4933-90c0-fa58bc35922f",
+      "name": "AuthCode",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "functionCode": "const { width, height, length } = $json;\nif (length && width && height) {\n  const volumetricWeight = Math.round((length * width * height) / 5000 * 1000);\n  return [{ json: { ...$json, volumetricWeight } }];\n}\nreturn [{ json: { ...$json } }];"
+      },
+      "id": "01f6b4e9-4146-4987-8cd6-88aa9883b046",
+      "name": "Volumetric Weight",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        60,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "deliveryPromise",
+              "value": "={{$json.deliveryPromise || 'SURFACE'}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "12ddac61-14db-46ff-94c0-4d7a83635bbc",
+      "name": "DefaultParams",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        40,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const data = $json.data;\nreturn [{\n  json: {\n    output: `Shipping charge is around ₹${data.shippingCharge - data.shippingCharge%30 } to ₹${data.shippingCharge + data.shippingCharge%30 } for weight ${data.appliedZone.Weight} grams. Zone: ${data.appliedZone.MappingValue}.`\n  }\n}];"
+      },
+      "id": "22c04f0a-dbb7-44c5-a7e6-ea1635fdacf0",
+      "name": "Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        500,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"output\": \"Kindly provide the valid pincodes (source pincode and destination pincode) to check the rates\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        40,
+        100
+      ],
+      "id": "6289c77e-62f9-48d3-9df4-d023eb60175c",
+      "name": "Follow Up pincode"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"output\": \"Kindly provide the parcel details (in KG / height,width,breath) to check the rates\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        60,
+        460
+      ],
+      "id": "58fbc345-7805-49a5-9a00-ff56f59c87b6",
+      "name": "Follow Up Weight"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "83d18664-ea87-4b80-92ab-aaa6e1ba22a7",
+              "leftValue": "={{ $json.fromPincode }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "20f6f8af-5d40-4485-98a0-3d81e91c3463",
+              "leftValue": "={{ $json.fromPincode }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -260,
+        -80
+      ],
+      "id": "8e661b88-bdf7-4ba6-b68d-d3fa7035182b",
+      "name": "checkPincodes"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "83d18664-ea87-4b80-92ab-aaa6e1ba22a7",
+              "leftValue": "={{ $json.width }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "20f6f8af-5d40-4485-98a0-3d81e91c3463",
+              "leftValue": "={{ $json.height }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "2703702a-8529-44c8-a092-ac1fd009baa1",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -260,
+        300
+      ],
+      "id": "5bee01bf-fca1-462e-9f71-757decc92afb",
+      "name": "checkVolumetric"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "fromPincode": "400014",
+          "toPincode": "411014",
+          "width": "112",
+          "height": "50",
+          "length": "60"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Format Response1": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "checkPincodes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AuthCode": {
+      "main": [
+        [
+          {
+            "node": "Call Delcaper API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Volumetric Weight": {
+      "main": [
+        [
+          {
+            "node": "AuthCode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DefaultParams": {
+      "main": [
+        [
+          {
+            "node": "checkVolumetric",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Delcaper API": {
+      "main": [
+        [
+          {
+            "node": "Format Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkPincodes": {
+      "main": [
+        [
+          {
+            "node": "DefaultParams",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Follow Up pincode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkVolumetric": {
+      "main": [
+        [
+          {
+            "node": "Volumetric Weight",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Follow Up Weight",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3d47fd03-7fc8-4003-a5ad-2727983d1e23",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "03883649a96ad19f7263559e2b819ecc5413ebc75736f9548f3252733f419860"
+  },
+  "id": "otwk3lNIR11udE70",
+  "tags": []
+}

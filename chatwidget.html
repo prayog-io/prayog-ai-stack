@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prayog AI Support</title>
+    <style>
+        /* Add your custom styles here */
+    </style>
+</head>
+<body>
+    <div id="chat-widget"></div>
+
+        <!-- Widget Configuration -->
+        <script>
+            window.ChatWidgetConfig = {
+                webhook: {
+                    url: 'http://localhost:5678/webhook/smile-ai-mcp',
+                    route: 'general'
+                },
+                branding: {
+                    logo: 'https://prayog.io/assets/logo.png',
+                    name: 'Proyog AI Support',
+                    welcomeText: 'Hi 👋, how can we help?',
+                    responseTimeText: 'AI typically respond right away',
+                    poweredBy:{
+                    link: "prayog.io",
+                    text:"Powered by Prayog.io"
+                }
+                },
+                style: {
+                    primaryColor: '#854fff',
+                    secondaryColor: '#6b3fd4',
+                    position: 'right',
+                    backgroundColor: '#ffffff', //Background color of the chat widget
+                    fontColor: '#333333' //Text color for messages and interface
+                }
+            };
+        </script>
+        <script src="https://cdn.jsdelivr.net/gh/WayneSimpson/n8n-chatbot-template@ba944c3/chat-widget.js"></script>
+    </body>
+</html>

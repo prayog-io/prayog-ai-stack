@@ -15,6 +15,9 @@ That's it! This single command sets up everything and gets you running in minute
 ## 🎯 What You Get Instantly
 
 - 🤖 **Open WebUI** (http://localhost:3000) - AI Chat Interface
+- 📊 **Grafana Monitoring** (http://localhost:4000) - Infrastructure & System Monitoring
+- 🔍 **Langfuse** (http://localhost:3001) - LLM Observability & Analytics
+- ⚡ **OpenWebUI Pipelines** (http://localhost:9099) - AI Pipeline Processing
 - 🔄 **N8N with OpenTelemetry** (http://localhost:5678) - Workflow Automation + Observability
 - 🗂️ **Qdrant** (http://localhost:6333) - Vector Database
 - 🗄️ **PostgreSQL** (localhost:5433) - Relational Database
@@ -66,93 +69,200 @@ That's it! This single command sets up everything and gets you running in minute
 
 ## 🎯 Overview
 
-This operator stack provides a complete OpenWebUI deployment with:
+This AI stack provides a complete development environment with:
 
 - **OpenWebUI**: Web interface for LLM interactions
-- **Langfuse**: Monitoring and analytics platform
-- **PostgreSQL**: Database for persistence
-- **Ollama**: Local LLM models
-- **Pipeline Service**: Custom pipeline integration
-- **N8N Integration**: External workflow support
+- **Grafana**: Infrastructure monitoring and observability 
+- **Langfuse**: LLM-specific monitoring and analytics
+- **OpenWebUI Pipelines**: Custom AI pipeline processing
+- **N8N**: Workflow automation with OpenTelemetry
+- **Qdrant**: Vector database for embeddings
+- **PostgreSQL**: Shared database for all services
 
 ## ✨ Features
 
-### Core Services
-- ✅ **OpenWebUI** with PostgreSQL backend
-- ✅ **Langfuse** monitoring and analytics
-- ✅ **Ollama** local LLM models
-- ✅ **Pipeline Service** for custom integrations
+### 🤖 AI Services
+- ✅ **OpenWebUI** - Modern AI chat interface
+- ✅ **Pipeline Processing** - Custom AI transformations
+- ✅ **OpenAI API Support** - External AI model integration
+- ✅ **Vector Database** - Qdrant for embeddings
 
-### Pipeline Integration
-- ✅ **N8N Pipe** - External workflow integration
-- ✅ **Langfuse Filter** - Monitoring and tracking
+### 📊 Complete Observability
+- ✅ **Grafana Monitoring** - Infrastructure metrics & traces
+- ✅ **Langfuse Analytics** - LLM conversation tracking
+- ✅ **OpenTelemetry** - Distributed tracing
+- ✅ **Real-time Dashboards** - System health monitoring
+
+### 🔄 Workflow Automation
+- ✅ **N8N Integration** - Visual workflow builder
+- ✅ **Database Automation** - PostgreSQL workflows
+- ✅ **AI Pipeline Triggers** - Automated AI processing
+- ✅ **Cross-service Communication** - Secure Docker networking
+
+### 🛡️ Production Ready
 - ✅ **Environment Variables** - Flexible configuration
-- ✅ **Docker Internal Networking** - Secure communication
-
-### Domain Configuration
-- ✅ **Interactive Setup** - Easy domain configuration
-- ✅ **Environment Variables** - Flexible deployment
-- ✅ **Multiple Environments** - Dev, staging, production
-- ✅ **Security Configuration** - Environment-based secrets
+- ✅ **Health Checks** - Service monitoring
+- ✅ **Data Persistence** - Volume management
+- ✅ **Security** - Isolated networks
 
 ## 🏗️ Architecture
 
 ```
+                                AI STACK ARCHITECTURE
+                               
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   OpenWebUI     │    │    Langfuse     │    │     Ollama      │
-│   (Port 8080)   │    │   (Port 3000)   │    │   (Port 11434)  │
+│   OpenWebUI     │    │    Grafana      │    │    Langfuse     │
+│   (Port 3000)   │    │   (Port 4000)   │    │   (Port 3001)   │
+│  AI Interface   │    │  Infrastructure │    │ LLM Analytics   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │              ┌─────────────────┐              │
+         │              │      N8N        │              │
+         │              │   (Port 5678)   │              │
+         │              │ Workflow Engine │              │
+         │              └─────────────────┘              │
          │                       │                       │
          └───────────────────────┼───────────────────────┘
                                  │
-                    ┌─────────────────┐
-                    │   PostgreSQL    │
-                    │   (Port 5432)   │
-                    └─────────────────┘
+                    ┌─────────────────────────┐
+                    │      PostgreSQL         │
+                    │     (Port 5433)         │
+                    │   Shared Database       │
+                    └─────────────────────────┘
                                  │
-                    ┌─────────────────┐
-                    │ Pipeline Service│
-                    │   (Custom)      │
-                    └─────────────────┘
+         ┌───────────────────────┼───────────────────────┐
+         │                       │                       │
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Pipelines     │    │     Qdrant      │    │  OpenTelemetry  │
+│   (Port 9099)   │    │   (Port 6333)   │    │    (OTLP)       │
+│ AI Processing   │    │ Vector Database │    │     Traces      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
+
+## 🌐 Service Access
+
+Once running, access your services at:
+
+| Service | URL | Purpose | Login |
+|---------|-----|---------|-------|
+| 🤖 **OpenWebUI** | http://localhost:3000 | AI Chat Interface | Sign up on first visit |
+| 📊 **Grafana** | http://localhost:4000 | Infrastructure Monitoring | admin / admin123 |
+| 🔍 **Langfuse** | http://localhost:3001 | LLM Observability | Create account on first visit |
+| ⚡ **Pipelines** | http://localhost:9099 | AI Pipeline API | API Key: `0p3n-w3bu!` |
+| 🔄 **N8N** | http://localhost:5678 | Workflow Automation | Setup on first visit |
+| 🗂️ **Qdrant** | http://localhost:6333 | Vector Database API | API Key: `difyai123456` |
 
 ## 📦 Installation
 
 ### Prerequisites
 - Docker and Docker Compose
 - Git
-- 4GB+ RAM (for Ollama models)
+- 8GB+ RAM (recommended for all services)
 
-### 1. Clone Repository
+### Quick Start (Recommended)
 ```bash
 git clone <repository-url>
-cd operator-stack
+cd ai-stack-demo
+./quick-start.sh
 ```
 
-### 2. Configure Domains
+### Manual Setup
 ```bash
-./configure-domains.sh
+# 1. Clone and setup
+git clone <repository-url>
+cd ai-stack-demo
+
+# 2. Copy environment file
+cp env.example .env
+
+# 3. Edit configuration (optional)
+nano .env
+
+# 4. Start services
+docker-compose up -d
+
+# 5. Check status
+docker ps
 ```
 
-Choose from:
-- **Local Development**: `localhost` setup
-- **Production**: Custom domain setup
-- **Custom Setup**: Manual configuration
+## 🔧 Configuration
 
-### 3. Start Services
+### Environment Variables
+
+Key configuration options in `.env`:
+
+#### 🤖 AI Configuration
 ```bash
-./start-pipeline-service.sh
+# For real OpenAI models (optional)
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_BASE_URL=https://api.openai.com/v1
+
+# Pipeline API (for custom processing)
+PIPELINES_API_BASE_URL=http://host.docker.internal:9099
+PIPELINES_API_KEY=0p3n-w3bu!
+```
+
+#### 📊 Monitoring Configuration
+```bash
+# Grafana
+GRAFANA_PORT=4000
+GRAFANA_ADMIN_PASSWORD=admin123
+
+# Langfuse
+LANGFUSE_PORT=3001
+LANGFUSE_SECRET=change-in-production
+```
+
+#### 🗄️ Database Configuration
+```bash
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=adminpass
+POSTGRES_PORT=5433
+```
+
+## 📊 Observability & Monitoring
+
+This stack includes comprehensive observability with Grafana and Langfuse:
+
+### 🔍 **Grafana Monitoring (Port 4000)**
+- **Infrastructure Metrics**: CPU, memory, disk usage
+- **Application Metrics**: N8N workflows, PostgreSQL performance  
+- **OpenTelemetry Traces**: Request tracing across services
+- **Custom Dashboards**: Pre-configured monitoring views
+- **Login**: admin / admin123
+
+### 📈 **Langfuse Analytics (Port 3001)**
+- **LLM Conversation Tracking**: All AI interactions logged
+- **Cost Analysis**: Track API usage and costs
+- **Performance Metrics**: Response times, model performance
+- **User Analytics**: Usage patterns and insights
+- **A/B Testing**: Compare different AI configurations
+
+### 🔗 **Integrated Observability**
+```bash
+# 1. Access Grafana
+open http://localhost:4000
+# Login: admin / admin123
+
+# 2. Access Langfuse  
+open http://localhost:3001
+# Create account on first visit
+
+# 3. Configure OpenWebUI → Langfuse integration
+# Add Langfuse API keys in OpenWebUI settings
+# Enable conversation tracking and analytics
 ```
 
 ### 4. Verify Installation
 ```bash
 # Check service status
-docker-compose -f docker-compose-openwebui.yml ps
+docker ps
 
-# Test endpoints
-curl http://localhost:8080/health
-curl http://localhost:3000/api/public/health
-curl http://localhost:11434/api/tags
+# Test main endpoints
+curl http://localhost:3000  # OpenWebUI
+curl http://localhost:4000  # Grafana
+curl http://localhost:3001  # Langfuse
+curl http://localhost:9099  # Pipelines
 ```
 
 ## ⚙️ Configuration

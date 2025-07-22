@@ -1,0 +1,287 @@
+{
+  "name": "PrayogServiceability",
+  "nodes": [
+    {
+      "parameters": {
+        "functionCode": "const from = $json.fromPincode;\nconst to = $json.toPincode;\n\nif (!from && !to) {\n  throw new Error('At least one pincode is required');\n}\n\nif (from && !to) {\n  return [\n    { json: { fromPincode: from, toPincode: from, mode: 'single-from' } },\n    { json: { fromPincode: from, toPincode: from, mode: 'single-to' } },\n  ];\n}\n\nif (!from && to) {\n  return [\n    { json: { fromPincode: to, toPincode: to, mode: 'single-from' } },\n    { json: { fromPincode: to, toPincode: to, mode: 'single-to' } },\n  ];\n}\n\n// both present\nreturn [\n  { json: { fromPincode: from, toPincode: to, mode: 'dual' } }\n];"
+      },
+      "id": "74e17b84-a6cd-4e9a-9880-e12da6452ac2",
+      "name": "Check Mode",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const { fromPincode, toPincode } = $json;\n\n\n// Check if there's an error response\nif ($json['message']) {\n  return [{\n    json: {\n      \"source_pincode\": fromPincode,\n      \"destination_pincode\": toPincode,\n      \"serviceable_status\": \"❌ Not Serviceable\",\n      \"error_message\": $json.message\n    }\n  }];\n}\n\n// Normal success response\nconst serviceable = $json.data?.serviceability;\n\nreturn [{\n  json: {\n    \"source_pincode\": fromPincode,\n    \"destination_pincode\": toPincode,\n    \"serviceable_status\": serviceable ? \"✅ Serviceable\" : \"❌ Not Serviceable\"\n  }\n}];\n"
+      },
+      "id": "a49d324c-dd80-4ef1-822a-68b85bd31e54",
+      "name": "Format Output",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "fromPincode",
+              "type": "number"
+            },
+            {
+              "name": "toPincode",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        -140
+      ],
+      "id": "a13f2205-1052-407d-bf63-37182cb65531",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f0da5f3d-4f7c-4141-8484-4c3386e48a8d",
+              "leftValue": "={{ $json.toPincode}}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "c435e06a-5cc3-4b5a-8d16-463c8f65a71f",
+              "leftValue": "={{ $json.fromPincode }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        360,
+        -140
+      ],
+      "id": "fbedcc0b-e1be-4366-8a02-32cadc29bade",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://apis.delcaper.com/fulfillment/public/seller/order/check-ecomm-order-serviceability",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {
+          "ignoreResponseCode": true
+        },
+        "bodyParametersJson": "={\n     \"fromPincode\": {{ $json.fromPincode }},\n    \"toPincode\": {{ $json.toPincode }},\n    \"isCodOrder\": false,\n    \"deliveryMode\": \"SURFACE\"\n}"
+      },
+      "id": "de59485a-7482-44e1-9fc8-d59d0c878ad2",
+      "name": "Check Serviceability SURFACE",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -220
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://apis.delcaper.com/fulfillment/public/seller/order/check-ecomm-order-serviceability",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {
+          "ignoreResponseCode": true
+        },
+        "bodyParametersJson": "={\n    \"fromPincode\": {{ $json.fromPincode }},\n    \"toPincode\": {{ $json.toPincode }},\n    \"isCodOrder\": false,\n    \"deliveryMode\": \"AIR\"\n} "
+      },
+      "id": "2dc85eee-918e-44b8-8f59-f2a32362735a",
+      "name": "Check Serviceability AIR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"json\": {\n    \"serviceable_status\": \"kindly provide the corrent source pincode and destination pincode\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        780,
+        120
+      ],
+      "id": "5ea20706-1e68-4d92-a989-4a338b8c87ce",
+      "name": "FollowUp question"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://sandbox-apis.prayog.io/serviceability/v2/check",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {
+          "ignoreResponseCode": true
+        },
+        "bodyParametersJson": "={\n  \"source_postal_code\": \"{{ $json.fromPincode }}\",\n  \"destination_postal_code\": \"{{ $json.toPincode }}\",\n  \"parcel_category\": \"international\",\n  \"packages\": [\n    {\n      \"weight\": {\n        \"value\": 1.0,\n        \"unit\": \"kg\"\n      },\n      \"dimensions\": {\n        \"length\": 10.0,\n        \"width\": 10.0,\n        \"height\": 10.0,\n        \"unit\": \"cm\"\n      }\n    }\n  ]\n}"
+      },
+      "id": "ba59a21a-1115-46a5-a383-1aaa67ffb664",
+      "name": "InternationalServiceability",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -420
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "functionCode": "// Normal success response\nconst serviceable = $json['success'];\n// Check if there's an error response\nif ($json['success']) {\n  return [{\n    json: {\n      \"source_pincode\": $json.source_address,\n      \"destination_pincode\": $json.destination_address,\n      \"serviceable_status\": \"✅ Serviceable\",\n      \"estimated_delivery_date_and_time\": $json.partners[0][\"capabilities\"][\"estimated_delivery_date_and_time\"],\n      \"local_cutoff_date_and_time\" : $json.partners[0][\"capabilities\"][\"local_cutoff_date_and_time\"]\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    \"serviceable_status\": serviceable ? \"✅ Serviceable\" : \"❌ Not Serviceable\"\n  }\n}];\n"
+      },
+      "id": "8ebf87d0-6c56-4872-a6a1-b6ea5ddd87bd",
+      "name": "Format Output1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        -420
+      ]
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "fromPincode": 560086,
+          "toPincode": 30271
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Check Mode": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Check Mode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Check Serviceability SURFACE",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Serviceability AIR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FollowUp question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Serviceability SURFACE": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Serviceability AIR": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "InternationalServiceability": {
+      "main": [
+        [
+          {
+            "node": "Format Output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c42b0466-8c2b-476a-86db-ad71d24b92c2",
+  "meta": {
+    "instanceId": "03883649a96ad19f7263559e2b819ecc5413ebc75736f9548f3252733f419860"
+  },
+  "id": "QUbNbTPzzpQQUm4x",
+  "tags": []
+}

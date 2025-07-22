@@ -1,0 +1,80 @@
+{
+  "name": "Sample AI Stack Demo Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "mode": "everyMinute"
+        }
+      },
+      "id": "8be8c101-7b1e-4064-b2b8-1e6d13c8a5d6",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "url": "http://localhost:3000",
+        "options": {}
+      },
+      "id": "f7d8e9c2-4b3a-4f8e-9c7d-2e8f1a6b5c4d",
+      "name": "Check OpenWebUI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "={{ $json.statusCode }}",
+            "operation": "equal",
+            "rightValue": 200
+          }
+        }
+      },
+      "id": "9a8b7c6d-5e4f-3a2b-1c9d-8e7f6a5b4c3d",
+      "name": "Check Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check OpenWebUI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check OpenWebUI": {
+      "main": [
+        [
+          {
+            "node": "Check Status", 
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1.0.0",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "sample-ai-stack-workflow",
+  "tags": []
+} 

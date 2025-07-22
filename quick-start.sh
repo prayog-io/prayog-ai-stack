@@ -100,9 +100,10 @@ check_prerequisites() {
 show_requirements() {
     echo -e "${YELLOW}System Requirements:${NC}"
     echo "  • Docker: ✅ $(docker --version | cut -d' ' -f3 | cut -d',' -f1)"
-    echo "  • Memory: Recommended 4GB+ RAM"
-    echo "  • Storage: ~2GB for Docker images"
-    echo "  • Ports: 3000, 5678, 6333, 5432"
+    echo "  • Memory: Recommended 8GB+ RAM (Current: 16GB ✅)"
+    echo "  • Storage: ~3GB for Docker images (Available: 210GB ✅)"
+    echo "  • Ports: 3000, 3001, 4000, 4317, 4318, 5433, 5678, 6333, 9099"
+    echo "  • Services: 7 containers (OpenWebUI, Grafana, Langfuse, Pipelines, N8N, Qdrant, PostgreSQL)"
     echo ""
 }
 
@@ -110,7 +111,7 @@ show_requirements() {
 check_ports() {
     print_status "Checking port availability..."
     
-    local ports=(3000 5678 6333 5432)
+    local ports=(3000 3001 4000 4317 4318 5433 5678 6333 9099)
     local busy_ports=()
     
     for port in "${ports[@]}"; do
@@ -218,14 +219,17 @@ show_final_status() {
     echo ""
     echo -e "${GREEN}🎉 Your PRAYOG : AI Stack DEMO is now running! 🎉${NC}"
     echo ""
-    echo -e "${CYAN}┌─────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}│${NC}                   🌐 ${YELLOW}Access URLs${NC}                        ${CYAN}│${NC}"
-    echo -e "${CYAN}├─────────────────────────────────────────────────────────┤${NC}"
-    echo -e "${CYAN}│${NC} 🤖 ${GREEN}Open WebUI${NC}     → ${BLUE}http://localhost:3000${NC}               ${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC} 🔄 ${GREEN}N8N Workflows${NC}  → ${BLUE}http://localhost:5678${NC}               ${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC} 🗂️  ${GREEN}Qdrant Vector${NC}  → ${BLUE}http://localhost:6333${NC}               ${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC} 🗄️  ${GREEN}PostgreSQL${NC}     → ${BLUE}localhost:5433${NC}                     ${CYAN}│${NC}"
-    echo -e "${CYAN}└─────────────────────────────────────────────────────────┘${NC}"
+    echo -e "${CYAN}┌───────────────────────────────────────────────────────────────┐${NC}"
+    echo -e "${CYAN}│${NC}                     🌐 ${YELLOW}Access URLs${NC}                          ${CYAN}│${NC}"
+    echo -e "${CYAN}├───────────────────────────────────────────────────────────────┤${NC}"
+    echo -e "${CYAN}│${NC} 🤖 ${GREEN}OpenWebUI${NC}       → ${BLUE}http://localhost:3000${NC}               ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 📊 ${GREEN}Grafana${NC}         → ${BLUE}http://localhost:4000${NC} ${YELLOW}(admin/admin123)${NC} ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🔍 ${GREEN}Langfuse${NC}        → ${BLUE}http://localhost:3001${NC}               ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} ⚡ ${GREEN}Pipelines${NC}       → ${BLUE}http://localhost:9099${NC}               ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🔄 ${GREEN}N8N Workflows${NC}   → ${BLUE}http://localhost:5678${NC}               ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🗂️  ${GREEN}Qdrant Vector${NC}   → ${BLUE}http://localhost:6333${NC}               ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🗄️  ${GREEN}PostgreSQL${NC}      → ${BLUE}localhost:5433${NC}                   ${CYAN}│${NC}"
+    echo -e "${CYAN}└───────────────────────────────────────────────────────────────┘${NC}"
     echo ""
     echo -e "${CYAN}🛠️  Management Commands:${NC}"
     echo "  • Check status:    ./status.sh"
@@ -234,10 +238,13 @@ show_final_status() {
     echo "  • Restart:         ./quick-start.sh"
     echo ""
     echo -e "${YELLOW}💡 Quick Tips:${NC}"
-    echo "  • Open WebUI: Create an account and start chatting with AI"
-    echo "  • N8N: Build powerful automation workflows with OpenTelemetry"
+    echo "  • OpenWebUI: Create account and start chatting with AI"
+    echo "  • Grafana: Monitor infrastructure (login: admin/admin123)"
+    echo "  • Langfuse: Track LLM conversations and analytics"
+    echo "  • Pipelines: Process AI requests with custom logic"
+    echo "  • N8N: Build automation workflows with monitoring"
     echo "  • Qdrant: Vector database for AI embeddings"
-    echo "  • All data is persisted in Docker volumes"
+    echo "  • All data persisted in Docker volumes"
     echo ""
     echo -e "${GREEN}🚀 Happy building with PRAYOG! 🚀${NC}"
     echo -e "${PURPLE}Visit ${CYAN}https://prayog.io${PURPLE} for more AI tools and resources!${NC}"

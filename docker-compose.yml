@@ -7,6 +7,8 @@ services:
     environment:
       WEBUI_NAME: ${WEBUI_NAME:-Prayog}
       ENABLE_WEBSOCKET_SUPPORT: ${ENABLE_WEBSOCKET_SUPPORT:-false}
+      OLLAMA_API_BASE_URL: ${OLLAMA_API_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_BASE_URLS: ${OLLAMA_BASE_URLS:-https://6qlr3gnchnehin-11434.proxy.runpod.net}
       # Pipeline API Configuration
       OPENAI_API_KEY: ${OPENAI_API_KEY:-0p3n-w3bu!}
       OPENAI_API_BASE_URL: ${OPENAI_API_BASE_URL:-http://host.docker.internal:9099}
@@ -15,7 +17,7 @@ services:
       LANGFUSE_HOST: ${LANGFUSE_HOST:-http://langfuse:3000}
       #OTEL Configuration
       ENABLE_OTEL: ${ENABLE_OTEL:-true}
-      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://grafana:4317}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://grafana_monitoring:4317}
       OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-open-webui}
     ports:
       - "${OPEN_WEBUI_PORT:-3000}:8080"
@@ -23,7 +25,7 @@ services:
       - mnt:/app/backend/data  # Use simple mount
     networks:
       - app_network
-  
+
   # Postgres service
   postgres:
     image: postgres:16-alpine
@@ -86,6 +88,22 @@ services:
       QDRANT_API_KEY: ${QDRANT_API_KEY:-difyai123456}
     volumes:
       - mnt:/qdrant/storage  # Use simple mount
+    networks:
+      - app_network
+
+  # Grafana monitoring service for N8N and all services
+  grafana:
+    image: grafana/otel-lgtm:latest
+    container_name: grafana_monitoring
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-4000}:3000"   # Grafana UI (changed from 3000 to avoid conflict)
+      - "${GRAFANA_OTLP_PORT:-4317}:4317"   # OTLP/gRPC
+      - "${GRAFANA_OTLP_HTTP_PORT:-4318}:4318"   # OTLP/HTTP
+    environment:
+      # Grafana configuration
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-Prayog@123}
+      GF_USERS_ALLOW_SIGN_UP: false
     networks:
       - app_network
 

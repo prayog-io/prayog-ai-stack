@@ -79,7 +79,7 @@ show_status() {
     echo "│ Service         │ Status      │ CPU / Memory     │"
     echo "├─────────────────┼─────────────┼──────────────────┤"
     
-    services=("open_webui" "postgres" "n8n" "qdrant")
+    services=("open_webui" "grafana_monitoring" "langfuse" "openwebui_pipelines" "n8n" "qdrant" "postgres")
     for service in "${services[@]}"; do
         status=$(check_container_status "$service")
         stats=$(get_container_stats "$service")
@@ -97,7 +97,19 @@ show_status() {
     
     # Open WebUI
     health=$(check_service_health "Open WebUI" "http://localhost:3000")
-    printf "│ %-15s │ %-11s │ %-24s │\n" "Open WebUI" "$health" "http://localhost:3000"
+    printf "│ %-15s │ %-11s │ %-24s │\n" "OpenWebUI" "$health" "http://localhost:3000"
+    
+    # Grafana
+    health=$(check_service_health "Grafana" "http://localhost:4000")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "Grafana" "$health" "http://localhost:4000"
+    
+    # Langfuse
+    health=$(check_service_health "Langfuse" "http://localhost:3001")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "Langfuse" "$health" "http://localhost:3001"
+    
+    # Pipelines
+    health=$(check_service_health "Pipelines" "http://localhost:9099")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "Pipelines" "$health" "http://localhost:9099"
     
     # N8N
     health=$(check_service_health "N8N" "http://localhost:5678")
@@ -113,7 +125,7 @@ show_status() {
     else
         pg_health="❌"
     fi
-    printf "│ %-15s │ %-11s │ %-24s │\n" "PostgreSQL" "$pg_health" "localhost:5432"
+    printf "│ %-15s │ %-11s │ %-24s │\n" "PostgreSQL" "$pg_health" "localhost:5433"
     
     echo "└─────────────────┴─────────────┴──────────────────────────┘"
     echo ""

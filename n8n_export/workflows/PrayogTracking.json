@@ -1,0 +1,428 @@
+{
+  "name": "PrayogTracking",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 👋 Welcome to Prayog-ShipmentTracking!\nThis workflow shows ,An Agent that uses Prayog Tracking API.\n\n### 1. Connect your accounts\n- Set up your LLM Endpoint [Runpod Endpoint] in the `Ollama Model` node \n- Create a Tool with Http request use the `SMILe Tracking` API & request setting, if needed.\n\n### 2. Ready to test it?\nClick Chat below or use Webhook and start asking questions! For example you can try `where is my parcel 24007270001447 ?`",
+        "height": 469,
+        "width": 959,
+        "color": 6
+      },
+      "id": "03a83fe0-9e76-41b7-ba4c-9488a2a23865",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -620
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Use **Prayog-Tracking API** Simply get **Shipment Status**.",
+        "height": 80,
+        "width": 266,
+        "color": 4
+      },
+      "id": "5e5efaf2-0789-4a3a-a667-e7b54fd925c5",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        -540
+      ]
+    },
+    {
+      "parameters": {
+        "content": "LLM",
+        "height": 180,
+        "width": 386,
+        "color": 4
+      },
+      "id": "82fbd568-42d3-4ca4-843b-331a5397189a",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Tools",
+        "height": 180,
+        "width": 426,
+        "color": 4
+      },
+      "id": "a2a4cc60-71b2-4291-9a20-1b73aa785e39",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Memory\n",
+        "height": 180,
+        "width": 150,
+        "color": 4
+      },
+      "id": "cf2e750e-e791-43e8-81d6-7900d7e7ef74",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "AWB_Number"
+            },
+            {
+              "name": "sessionId"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        -300
+      ],
+      "id": "a20c406b-8a94-40a2-ad4b-1c611aecd390",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "url": "=https://apis.prayog.io/tracking/v2/{{ $json.AWB_Number }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1460,
+        -300
+      ],
+      "id": "7809471c-27eb-4804-a826-69a5b2200154",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fc31c98a-2080-4c37-8a7a-ffe14d94fcdd",
+              "name": "trackingId",
+              "value": "={{ $json.workflow_output.statuses[0].trackingId  }}",
+              "type": "string"
+            },
+            {
+              "id": "9de3cae7-26b7-4c8c-b876-0e54f3b8481b",
+              "name": "location",
+              "value": "={{ $json.workflow_output.statuses[0].location }}",
+              "type": "string"
+            },
+            {
+              "id": "087f8c32-5d1b-4c9a-880d-c85d511822cc",
+              "name": "updatedAt",
+              "value": "={{ $json.workflow_output.statuses[0].updatedAt }}",
+              "type": "string"
+            },
+            {
+              "id": "f66f42df-468b-4f5e-bc66-ecfcf42f53ec",
+              "name": "subcategory",
+              "value": "={{ $json.workflow_output.statuses[0].subcategory }}",
+              "type": "string"
+            },
+            {
+              "id": "e072cf44-b255-47c2-8197-a6ed998f2980",
+              "name": "category",
+              "value": "={{ $json.workflow_output.statuses[0].category }}",
+              "type": "string"
+            },
+            {
+              "id": "b71f8e19-f84b-4a5d-8821-dea259f288a4",
+              "name": "destinationPincode",
+              "value": "={{ $('HTTP Request').item.json.orderInformation.destinationLocation.pincode }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1900,
+        -300
+      ],
+      "id": "93510803-d33e-4841-b14c-b88071de770d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2fac5fc7-1426-4a85-b798-637aa612f9a9",
+              "leftValue": "={ { $json.AWB_Number }}",
+              "rightValue": "AWB Not Found",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1160,
+        -300
+      ],
+      "id": "8de077a4-729e-416b-9959-93b19d843ad4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"output\": \"Kindly enter valid AWB Number\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        -100
+      ],
+      "id": "9ce95feb-35aa-479c-8f3b-e5eec3038ce0",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": "list",
+          "cachedResultName": "n8n"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_history",
+          "mode": "list",
+          "cachedResultName": "chat_history"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('When Executed by Another Workflow').item.json.sessionId }}",
+            "user_message": "={{ $('When Executed by Another Workflow').item.json.AWB_Number }}",
+            "ai_response": "={{ $json }}",
+            "timestamp": "={{ $now }}",
+            "workflow_name": "={{ $workflow.id }}",
+            "workflow_output": "={{ $json }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_message",
+              "displayName": "user_message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ai_response",
+              "displayName": "ai_response",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "metadata",
+              "displayName": "metadata",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_output",
+              "displayName": "workflow_output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        1660,
+        -300
+      ],
+      "id": "b4515dfa-8ed7-4fc4-9a28-2ca80ce2e144",
+      "name": "main_chat_history",
+      "credentials": {
+        "postgres": {
+          "id": "Qew7sCf3d2nynOq7",
+          "name": "SMILe_AWS_PostgresAIPlatform"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "AWB_Number": "24084200059841",
+          "sessionId": "dd5cfd7d-98fa-4c69-8393-412993f68dd1"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "main_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "main_chat_history": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ce800d63-81c4-4cf8-8b25-cc637515d54e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "03883649a96ad19f7263559e2b819ecc5413ebc75736f9548f3252733f419860"
+  },
+  "id": "LZz8HGBpTT5tSQdA",
+  "tags": [
+    {
+      "createdAt": "2025-03-19T16:55:31.961Z",
+      "updatedAt": "2025-03-19T16:55:31.961Z",
+      "id": "giT5QsreB9zyvwoO",
+      "name": "SMILeMARUT"
+    }
+  ]
+}
