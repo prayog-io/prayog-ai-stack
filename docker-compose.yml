@@ -50,6 +50,7 @@ services:
       N8N_METRICS: ${N8N_METRICS:-true}
       WEBHOOK_URL: ${WEBHOOK_URL:-http://localhost:5678/}
       WEBHOOK_TUNNEL_URL: ${WEBHOOK_TUNNEL_URL:-http://localhost:5678/}
+      N8N_SECURE_COOKIE: ${N8N_SECURE_COOKIE:-false}
       # OpenTelemetry Configuration
       OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-n8n}
       OTEL_EXPORTER_OTLP_PROTOCOL: ${OTEL_EXPORTER_OTLP_PROTOCOL:-http/protobuf}
