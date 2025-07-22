@@ -5,7 +5,7 @@ services:
     container_name: open_webui
     restart: unless-stopped
     environment:
-      WEBUI_NAME: ${WEBUI_NAME:-SMILe}
+      WEBUI_NAME: ${WEBUI_NAME:-Prayog}
       ENABLE_WEBSOCKET_SUPPORT: ${ENABLE_WEBSOCKET_SUPPORT:-false}
     ports:
       - "${OPEN_WEBUI_PORT:-3000}:8080"

@@ -167,7 +167,7 @@ curl http://localhost:11434/api/tags
 | `LANGFUSE_DOMAIN` | `http://langfuse:3000` | Langfuse domain |
 | `LANGFUSE_PORT` | `3000` | Langfuse port |
 | `OLLAMA_PORT` | `11434` | Ollama port |
-| `N8N_DOMAIN` | `https://marut.gosmile.in` | N8N domain |
+| `N8N_DOMAIN` | `https://n8n.prayog.io` | N8N domain |
 
 #### Security Configuration
 | Variable | Default | Description |
@@ -231,7 +231,7 @@ Integrates OpenWebUI with N8N workflows for external processing and automation.
 **Configuration:**
 ```json
 {
-  "n8n_url": "https://marut.gosmile.in/n8n/webhook-test/ca7526be-a82b-4c20-b9b6-121ac6e9d8af",
+  "n8n_url": "http://localhost:5678/webhook-test/ca7526be-a82b-4c20-b9b6-121ac6e9d8af",
   "n8n_bearer_token": "your-bearer-token",
   "input_field": "chatInput",
   "response_field": "output",
@@ -505,7 +505,7 @@ LANGFUSE_LOG_LEVEL=DEBUG
 - **Documentation**: https://ollama.ai/docs
 
 ### N8N Webhook
-- **Webhook URL**: `https://marut.gosmile.in/n8n/webhook-test/ca7526be-a82b-4c20-b9b6-121ac6e9d8af`
+- **Webhook URL**: `http://localhost:5678/webhook-test/ca7526be-a82b-4c20-b9b6-121ac6e9d8af`
 - **Method**: `POST`
 - **Content-Type**: `application/json`
 
