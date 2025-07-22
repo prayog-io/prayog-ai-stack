@@ -7,13 +7,23 @@ services:
     environment:
       WEBUI_NAME: ${WEBUI_NAME:-Prayog}
       ENABLE_WEBSOCKET_SUPPORT: ${ENABLE_WEBSOCKET_SUPPORT:-false}
+      # Pipeline API Configuration
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-0p3n-w3bu!}
+      OPENAI_API_BASE_URL: ${OPENAI_API_BASE_URL:-http://host.docker.internal:9099}
+      LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:-}
+      LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:-}
+      LANGFUSE_HOST: ${LANGFUSE_HOST:-http://langfuse:3000}
+      #OTEL Configuration
+      ENABLE_OTEL: ${ENABLE_OTEL:-true}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://grafana:4317}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-open-webui}
     ports:
       - "${OPEN_WEBUI_PORT:-3000}:8080"
     volumes:
       - mnt:/app/backend/data  # Use simple mount
     networks:
       - app_network
-
+  
   # Postgres service
   postgres:
     image: postgres:16-alpine
@@ -79,14 +89,60 @@ services:
     networks:
       - app_network
 
+  # OpenWebUI Pipelines service
+  pipelines:
+    image: ghcr.io/open-webui/pipelines:main
+    container_name: openwebui_pipelines
+    restart: unless-stopped
+    environment:
+      # Optional: Pre-load specific pipelines
+      PIPELINES_URLS: ${PIPELINES_URLS:-}
+      # Optional: Change pipelines directory
+      PIPELINES_DIR: ${PIPELINES_DIR:-/app/pipelines}
+      # API Configuration
+      API_KEY: ${PIPELINES_API_KEY:-0p3n-w3bu!}
+    ports:
+      - "${PIPELINES_PORT:-9099}:9099"
+    volumes:
+      - pipelines_data:/app/pipelines  # Pipeline configurations and custom code
+    networks:
+      - app_network
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  # Langfuse service for LLM observability and analytics
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: langfuse
+    restart: unless-stopped
+    environment:
+      # Database Configuration (uses same PostgreSQL instance)
+      DATABASE_URL: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-adminpass}@postgres:5432/${LANGFUSE_DB:-langfuse}
+      # Langfuse Configuration
+      NEXTAUTH_URL: ${LANGFUSE_URL:-http://localhost:3001}
+      NEXTAUTH_SECRET: ${LANGFUSE_SECRET:-langfuse-secret-key-change-in-production}
+      SALT: ${LANGFUSE_SALT:-langfuse-salt-change-in-production}
+      # Disable ClickHouse requirement (use PostgreSQL only)
+      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: ${LANGFUSE_EXPERIMENTAL:-false}
+      # Telemetry settings
+      TELEMETRY_ENABLED: ${LANGFUSE_TELEMETRY:-true}
+    ports:
+      - "${LANGFUSE_PORT:-3001}:3000"
+    depends_on:
+      - postgres
+    networks:
+      - app_network
+
 networks:
   app_network:
     driver: bridge
 
 volumes:
   mnt:
-    external: true  # Shared volume for Open WebUI and Qdrant data
+    driver: local  # Shared volume for Open WebUI and Qdrant data
   postgres_data:
     driver: local  # PostgreSQL database files (shared by all services using PostgreSQL)
   n8n_data:
     driver: local  # N8N application data (workflows, credentials, settings) - NOT database data
+  pipelines_data:
+    driver: local  # OpenWebUI Pipelines data (pipeline configurations and custom code)
