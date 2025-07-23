@@ -61,6 +61,19 @@ start_services() {
 wait_for_services() {
     print_status "Waiting for services to be ready..."
     
+    # Load environment variables if .env file exists
+    if [ -f .env ]; then
+        source .env
+    fi
+    
+    # Extract domain/IP from WEBHOOK_URL or use localhost as fallback
+    if [ -n "$WEBHOOK_URL" ]; then
+        # Extract domain from WEBHOOK_URL (remove http:// and everything after first :)
+        DOMAIN=$(echo "$WEBHOOK_URL" | sed 's|http://||' | sed 's|:.*||')
+    else
+        DOMAIN="localhost"
+    fi
+    
     # Wait for PostgreSQL
     print_status "Waiting for PostgreSQL..."
     timeout=60
@@ -83,7 +96,7 @@ wait_for_services() {
     timeout=60
     count=0
     while [ $count -lt $timeout ]; do
-        if curl -f http://localhost:3000 &> /dev/null; then
+        if curl -f http://${DOMAIN}:3000 &> /dev/null; then
             print_success "Open WebUI is ready"
             break
         fi
@@ -100,7 +113,7 @@ wait_for_services() {
     timeout=60
     count=0
     while [ $count -lt $timeout ]; do
-        if curl -f http://localhost:5678 &> /dev/null; then
+        if curl -f http://${DOMAIN}:5678 &> /dev/null; then
             print_success "N8N is ready"
             break
         fi
@@ -117,7 +130,7 @@ wait_for_services() {
     timeout=60
     count=0
     while [ $count -lt $timeout ]; do
-        if curl -f http://localhost:6333/health &> /dev/null; then
+        if curl -f http://${DOMAIN}:6333/health &> /dev/null; then
             print_success "Qdrant is ready"
             break
         fi
@@ -144,15 +157,28 @@ show_status() {
 
 # Show access URLs
 show_urls() {
+    # Load environment variables if .env file exists
+    if [ -f .env ]; then
+        source .env
+    fi
+    
+    # Extract domain/IP from WEBHOOK_URL or use localhost as fallback
+    if [ -n "$WEBHOOK_URL" ]; then
+        # Extract domain from WEBHOOK_URL (remove http:// and everything after first :)
+        DOMAIN=$(echo "$WEBHOOK_URL" | sed 's|http://||' | sed 's|:.*||')
+    else
+        DOMAIN="localhost"
+    fi
+    
     echo ""
     print_success "🎉 PRAYOG : AI Stack DEMO is now running!"
     echo ""
     echo -e "${YELLOW}Access your services:${NC}"
     echo -e "${CYAN}┌─────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}│${NC} 🌐 ${GREEN}Open WebUI${NC}:  ${BLUE}http://localhost:3000${NC}   ${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC} 🔄 ${GREEN}N8N${NC}:         ${BLUE}http://localhost:5678${NC}   ${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC} 🗂️  ${GREEN}Qdrant${NC}:      ${BLUE}http://localhost:6333${NC}   ${CYAN}│${NC}"
-    echo -e "${CYAN}│${NC} 🗄️  ${GREEN}PostgreSQL${NC}: ${BLUE}localhost:5433${NC}          ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🌐 ${GREEN}Open WebUI${NC}:  ${BLUE}http://${DOMAIN}:3000${NC}   ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🔄 ${GREEN}N8N${NC}:         ${BLUE}http://${DOMAIN}:5678${NC}   ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🗂️  ${GREEN}Qdrant${NC}:      ${BLUE}http://${DOMAIN}:6333${NC}   ${CYAN}│${NC}"
+    echo -e "${CYAN}│${NC} 🗄️  ${GREEN}PostgreSQL${NC}: ${BLUE}${DOMAIN}:5433${NC}          ${CYAN}│${NC}"
     echo -e "${CYAN}└─────────────────────────────────────────┘${NC}"
     echo ""
     echo "Useful commands:"

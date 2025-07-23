@@ -89,6 +89,19 @@ show_status() {
     
     echo ""
     
+    # Load environment variables if .env file exists
+    if [ -f .env ]; then
+        source .env
+    fi
+    
+    # Extract domain/IP from WEBHOOK_URL or use localhost as fallback
+    if [ -n "$WEBHOOK_URL" ]; then
+        # Extract domain from WEBHOOK_URL (remove http:// and everything after first :)
+        DOMAIN=$(echo "$WEBHOOK_URL" | sed 's|http://||' | sed 's|:.*||')
+    else
+        DOMAIN="localhost"
+    fi
+    
     # Service Health Check
     echo "🔍 Service Health:"
     echo "┌─────────────────┬─────────────┬──────────────────────────┐"
@@ -96,28 +109,28 @@ show_status() {
     echo "├─────────────────┼─────────────┼──────────────────────────┤"
     
     # Open WebUI
-    health=$(check_service_health "Open WebUI" "http://localhost:3000")
-    printf "│ %-15s │ %-11s │ %-24s │\n" "OpenWebUI" "$health" "http://localhost:3000"
+    health=$(check_service_health "Open WebUI" "http://${DOMAIN}:3000")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "OpenWebUI" "$health" "http://${DOMAIN}:3000"
     
     # Grafana
-    health=$(check_service_health "Grafana" "http://localhost:4000")
-    printf "│ %-15s │ %-11s │ %-24s │\n" "Grafana" "$health" "http://localhost:4000"
+    health=$(check_service_health "Grafana" "http://${DOMAIN}:4000")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "Grafana" "$health" "http://${DOMAIN}:4000"
     
     # Langfuse
-    health=$(check_service_health "Langfuse" "http://localhost:3001")
-    printf "│ %-15s │ %-11s │ %-24s │\n" "Langfuse" "$health" "http://localhost:3001"
+    health=$(check_service_health "Langfuse" "http://${DOMAIN}:3001")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "Langfuse" "$health" "http://${DOMAIN}:3001"
     
     # Pipelines
-    health=$(check_service_health "Pipelines" "http://localhost:9099")
-    printf "│ %-15s │ %-11s │ %-24s │\n" "Pipelines" "$health" "http://localhost:9099"
+    health=$(check_service_health "Pipelines" "http://${DOMAIN}:9099")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "Pipelines" "$health" "http://${DOMAIN}:9099"
     
     # N8N
-    health=$(check_service_health "N8N" "http://localhost:5678")
-    printf "│ %-15s │ %-11s │ %-24s │\n" "N8N" "$health" "http://localhost:5678"
+    health=$(check_service_health "N8N" "http://${DOMAIN}:5678")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "N8N" "$health" "http://${DOMAIN}:5678"
     
     # Qdrant
-    health=$(check_service_health "Qdrant" "http://localhost:6333/health")
-    printf "│ %-15s │ %-11s │ %-24s │\n" "Qdrant" "$health" "http://localhost:6333"
+    health=$(check_service_health "Qdrant" "http://${DOMAIN}:6333/health")
+    printf "│ %-15s │ %-11s │ %-24s │\n" "Qdrant" "$health" "http://${DOMAIN}:6333"
     
     # PostgreSQL (check via docker exec)
     if docker exec postgres pg_isready -U admin -d n8n &> /dev/null; then
@@ -125,7 +138,7 @@ show_status() {
     else
         pg_health="❌"
     fi
-    printf "│ %-15s │ %-11s │ %-24s │\n" "PostgreSQL" "$pg_health" "localhost:5433"
+    printf "│ %-15s │ %-11s │ %-24s │\n" "PostgreSQL" "$pg_health" "${DOMAIN}:5433"
     
     echo "└─────────────────┴─────────────┴──────────────────────────┘"
     echo ""
