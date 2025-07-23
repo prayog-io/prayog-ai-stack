@@ -49,6 +49,7 @@ services:
       dockerfile: dockerfile
     container_name: n8n
     restart: unless-stopped
+    command: ["start"]
     environment:
       # Database Configuration - CONNECTS TO EXISTING POSTGRES SERVICE
       DB_TYPE: postgresdb
