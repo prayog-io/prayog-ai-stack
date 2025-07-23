@@ -60,6 +60,8 @@ services:
       DB_POSTGRESDB_DATABASE: ${DB_POSTGRESDB_DATABASE:-n8n}  # Creates 'n8n' database in existing PostgreSQL
       # N8N Configuration
       N8N_PATH: ${N8N_PATH:-/}
+      N8N_HOST: ${N8N_HOST:-0.0.0.0}
+      N8N_PORT: ${N8N_PORT:-5678}
       N8N_METRICS: ${N8N_METRICS:-true}
       WEBHOOK_URL: ${WEBHOOK_URL:-http://localhost:5678/}
       WEBHOOK_TUNNEL_URL: ${WEBHOOK_TUNNEL_URL:-http://localhost:5678/}
