@@ -38,7 +38,7 @@ services:
     ports:
       - "${POSTGRES_PORT:-5433}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Use dedicated volume for PostgreSQL
+      - mnt:/var/lib/postgresql/data  # Use dedicated volume for PostgreSQL
     networks:
       - app_network
 
@@ -71,7 +71,7 @@ services:
     ports:
       - "${N8N_PORT:-5678}:5678"
     volumes:
-      - n8n_data:/home/node/.n8n  # N8N app data (workflows, etc.) - DB data stored in postgres_data volume
+      - mnt:/home/node/.n8n  # N8N app data (workflows, etc.) - DB data stored in postgres_data volume
     depends_on:
       - postgres
     networks:
