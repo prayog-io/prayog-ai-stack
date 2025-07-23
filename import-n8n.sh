@@ -106,6 +106,7 @@ check_export_directories() {
 
 # Import workflows
 import_workflows() {
+    set +e  # Disable exit on error for this function
     local workflow_files=(n8n_export/workflows/*.json)
     
     if [ ! -f "${workflow_files[0]}" ]; then
@@ -114,6 +115,7 @@ import_workflows() {
     fi
     
     print_status "Importing workflows..."
+
     
     local imported=0
     local failed=0
@@ -124,19 +126,25 @@ import_workflows() {
             echo -n "  • Importing $filename... "
             
             # Copy file to container and import using N8N CLI
-            if docker cp "$workflow_file" n8n:/tmp/workflow.json >/dev/null 2>&1 && \
-               docker exec n8n n8n import:workflow --input=/tmp/workflow.json >/dev/null 2>&1; then
-                echo -e "${GREEN}✅${NC}"
-                ((imported++))
+            if docker cp "$workflow_file" n8n:/tmp/workflow.json >/dev/null 2>&1; then
+                # Import workflow, ignore warnings but check for success
+                import_result=$(docker exec n8n n8n import:workflow --input=/tmp/workflow.json 2>/dev/null || true)
+                if echo "$import_result" | grep -q "Successfully imported"; then
+                    echo -e "${GREEN}✅${NC}"
+                    ((imported++))
+                else
+                    echo -e "${RED}❌${NC}"
+                    ((failed++))
+
+                fi
                 # Clean up temp file
                 docker exec n8n rm -f /tmp/workflow.json >/dev/null 2>&1
             else
                 echo -e "${RED}❌${NC}"
                 ((failed++))
-                # Clean up temp file even on failure
-                docker exec n8n rm -f /tmp/workflow.json >/dev/null 2>&1
             fi
         fi
+
     done
     
     if [ $imported -gt 0 ]; then
@@ -146,6 +154,8 @@ import_workflows() {
     if [ $failed -gt 0 ]; then
         print_warning "$failed workflows failed to import"
     fi
+    
+    set -e  # Re-enable exit on error
 }
 
 # Import credentials  

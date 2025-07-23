@@ -3,40 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prayog AI Support</title>
+    <title>Prayog AI Support Demo</title>
     <style>
-        /* Add your custom styles here */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .demo-banner {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .redirect-notice {
+            background: rgba(133, 79, 255, 0.1);
+            border: 2px solid #854fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(90deg, #854fff 0%, #6b3fd4 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 10px;
+            transition: transform 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(133, 79, 255, 0.3);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
     </style>
 </head>
 <body>
+    <div class="demo-banner">
+        🚀 LIVE DEMO - Experience Prayog AI in Action!
+    </div>
+
     <div id="chat-widget"></div>
 
-        <!-- Widget Configuration -->
-        <script>
-            window.ChatWidgetConfig = {
-                webhook: {
-                    url: 'http://localhost:5678/webhook/smile-ai-mcp',
-                    route: 'general'
-                },
-                branding: {
-                    logo: 'https://prayog.io/assets/logo.png',
-                    name: 'Proyog AI Support',
-                    welcomeText: 'Hi 👋, how can we help?',
-                    responseTimeText: 'AI typically respond right away',
-                    poweredBy:{
-                    link: "prayog.io",
-                    text:"Powered by Prayog.io"
+    <div style="margin: 32px auto 24px auto; max-width: 600px; background: linear-gradient(90deg, #854fff 0%, #6b3fd4 100%); color: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(133,79,255,0.10); padding: 32px 28px 24px 28px; text-align: center; font-family: 'Segoe UI', Arial, sans-serif;">
+        <img src="https://prayog.io/assets/logo.png" alt="Prayog Logo" style="height:48px; margin-bottom: 12px;">
+        <h1 style="margin: 0 0 10px 0; font-size: 2rem; font-weight: 700; letter-spacing: -1px;">Prayog AI Demo</h1>
+        <p style="margin: 0 0 10px 0; font-size: 1.15rem;">
+            <strong>AI Operator &amp; Chat Application Demo</strong>
+        </p>
+        <p style="margin: 0 0 18px 0; font-size: 1rem; opacity: 0.92;">
+            This is a <b>live demonstration</b> of the Prayog AI Stack.<br>
+            Try the chat widget below to experience AI-powered conversations.<br>
+            After testing, you'll be redirected to our main site for more information.
+        </p>
+        <span style="display: inline-block; background: rgba(255,255,255,0.13); color: #fff; border-radius: 8px; padding: 6px 16px; font-size: 0.98rem; font-weight: 500;">
+            💬 Start chatting below!
+        </span>
+    </div>
+
+    <div class="redirect-notice">
+        <h3 style="color: #854fff; margin-top: 0;">Ready to Build Your Own AI Solution?</h3>
+        <p>After testing our demo, visit our main website to learn more about implementing Prayog AI in your business.</p>
+        <a href="https://prayog.io" class="cta-button" target="_blank">Visit Prayog.io</a>
+        <a href="https://docs.prayog.io/" class="cta-button" target="_blank">View Documentation</a>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3 style="color: #854fff;">AI-Powered Chat</h3>
+            <p>Advanced conversational AI that understands context and provides intelligent responses.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 style="color: #854fff;">Real-time Processing</h3>
+            <p>Lightning-fast response times with real-time message processing and delivery.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3 style="color: #854fff;">Customizable Design</h3>
+            <p>Fully customizable chat widget that matches your brand and website design.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🔧</div>
+            <h3 style="color: #854fff;">Easy Integration</h3>
+            <p>Simple setup process with comprehensive documentation and support.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3 style="color: #854fff;">Analytics & Insights</h3>
+            <p>Detailed analytics to understand user interactions and improve performance.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3 style="color: #854fff;">Secure & Reliable</h3>
+            <p>Enterprise-grade security with reliable uptime and data protection.</p>
+        </div>
+    </div>
+
+    <!-- Widget Configuration -->
+    <script>
+        window.ChatWidgetConfig = {
+            webhook: {
+                url: 'http://localhost:5678/webhook/smile-ai-mcp',
+                route: 'general'
+            },
+            branding: {
+                logo: 'https://prayog.io/assets/logo.png',
+                name: 'Prayog AI Support',
+                welcomeText: 'Hi 👋, how can we help you today?',
+                responseTimeText: 'AI typically responds instantly',
+                poweredBy: {
+                    link: "https://prayog.io",
+                    text: "Powered by Prayog.io"
                 }
-                },
-                style: {
-                    primaryColor: '#854fff',
-                    secondaryColor: '#6b3fd4',
-                    position: 'right',
-                    backgroundColor: '#ffffff', //Background color of the chat widget
-                    fontColor: '#333333' //Text color for messages and interface
+            },
+            style: {
+                primaryColor: '#854fff',
+                secondaryColor: '#6b3fd4',
+                position: 'right',
+                backgroundColor: '#ffffff',
+                fontColor: '#333333'
+            }
+        };
+
+        // Auto-redirect functionality
+        let interactionCount = 0;
+        let hasInteracted = false;
+
+        // Monitor chat widget interactions
+        function setupAutoRedirect() {
+            // Set up a timer to redirect after 5 minutes if no interaction
+            setTimeout(() => {
+                if (!hasInteracted) {
+                    showRedirectDialog();
                 }
-            };
-        </script>
-        <script src="https://cdn.jsdelivr.net/gh/WayneSimpson/n8n-chatbot-template@ba944c3/chat-widget.js"></script>
-    </body>
+            }, 300000); // 5 minutes
+
+            // Monitor for chat interactions
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length > 0) {
+                        hasInteracted = true;
+                        interactionCount++;
+                        
+                        // After 3 interactions, show redirect option
+                        if (interactionCount >= 3) {
+                            setTimeout(() => {
+                                showRedirectDialog();
+                            }, 30000); // Show after 30 seconds of interaction
+                        }
+                    }
+                });
+            });
+
+            // Start observing the chat widget
+            const chatWidget = document.getElementById('chat-widget');
+            if (chatWidget) {
+                observer.observe(chatWidget, { childList: true, subtree: true });
+            }
+        }
+
+        function showRedirectDialog() {
+            const redirectDialog = document.createElement('div');
+            redirectDialog.innerHTML = `
+                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+                    <div style="background: white; border-radius: 16px; padding: 32px; text-align: center; max-width: 400px; margin: 20px;">
+                        <h2 style="color: #854fff; margin-top: 0;">Enjoyed the Demo?</h2>
+                        <p>Ready to implement Prayog AI in your own project?</p>
+                        <div style="margin: 20px 0;">
+                            <a href="https://prayog.io" style="display: inline-block; background: #854fff; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 5px; font-weight: 600;">Visit Prayog.io</a>
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="display: inline-block; background: #ccc; color: #333; padding: 12px 24px; border-radius: 8px; border: none; margin: 5px; font-weight: 600; cursor: pointer;">Continue Demo</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(redirectDialog);
+        }
+
+        // Initialize auto-redirect when page loads
+        window.addEventListener('load', setupAutoRedirect);
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/WayneSimpson/n8n-chatbot-template@ba944c3/chat-widget.js"></script>
+</body>
 </html>

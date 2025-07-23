@@ -1,0 +1,827 @@
+{
+  "name": "PrayogSupportAi",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "qwen2.5:3b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        120,
+        120
+      ],
+      "id": "a8c3d500-1859-427f-b675-a05c04d5b7f8",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "z5D0fFrw6QeEKb61",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "ShipmentTracking",
+        "description": "call this tool to find/fetch tracking details like last place located & status for awb shipment number",
+        "workflowId": {
+          "__rl": true,
+          "value": "LZz8HGBpTT5tSQdA",
+          "mode": "list",
+          "cachedResultName": "PrayogTracking"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "AWB_Number": "={{ $fromAI(\"Awb_Number\", \"Tracking number for shipments\", \"string\", \"\") }}",
+            "sessionId": "={{$json.body.sessionId}}"
+          },
+          "matchingColumns": [
+            "AWB Number"
+          ],
+          "schema": [
+            {
+              "id": "AWB_Number",
+              "displayName": "AWB_Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        660,
+        360
+      ],
+      "id": "fb4ab54a-0fc1-4ced-b22a-8ee5ed7a5e8c",
+      "name": "ShipmentTracking"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -420,
+        -100
+      ],
+      "id": "e4eb7cb5-ebea-4d99-9472-1fbbe3669f06",
+      "name": "When chat message received",
+      "webhookId": "b7f1b68d-ade0-4cd2-8989-257d2025e886"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"body\": {\n    \"chatInput\" : \"{{ $json.chatInput }}\",\n    \"sessionId\" : \"{{ $json.sessionId }}\"\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -220,
+        -100
+      ],
+      "id": "aba717d5-fb2f-401d-bc71-2a66747b6d23",
+      "name": "JSONBody"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cf0cc2ff-ea63-4512-b609-abe1f4b60f07",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        80
+      ],
+      "id": "8a1a8827-eafc-42c3-ad15-0e87f3e2bfe5",
+      "name": "WebhookInput",
+      "webhookId": "cf0cc2ff-ea63-4512-b609-abe1f4b60f07"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        20
+      ],
+      "id": "865da487-8e3c-416d-ba20-bcafb4e241dc",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.sessionId }}",
+        "contextWindowLength": 2
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        140
+      ],
+      "id": "dbf95615-ac42-4d94-b470-6c9302ad3609",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "4tNYWqouAxWbiVAQ",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "Serviceability",
+        "description": "Serviceability - Only invoke this tool when pincodes are available in query and Use this tool to check if courier pickup and delivery are available between two Indian pincodes.",
+        "workflowId": {
+          "__rl": true,
+          "value": "QUbNbTPzzpQQUm4x",
+          "mode": "list",
+          "cachedResultName": "PrayogServiceability"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "toPincode": "={{ $fromAI('toPincode', `destination pincode`) }}",
+            "fromPincode": "={{ $fromAI('fromPincode', `source pincode`) }}"
+          },
+          "matchingColumns": [
+            "AWB_Number"
+          ],
+          "schema": [
+            {
+              "id": "fromPincode",
+              "displayName": "fromPincode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "toPincode",
+              "displayName": "toPincode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        980,
+        360
+      ],
+      "id": "3adb7d59-1ca0-4edd-813c-a8651c1ae921",
+      "name": "MarutServiceability"
+    },
+    {
+      "parameters": {
+        "name": "ETAService",
+        "description": "call this tool to get estimated time / ETA of the pincodes",
+        "workflowId": {
+          "__rl": true,
+          "value": "8kmB8cjnKt3OD93o",
+          "mode": "list",
+          "cachedResultName": "ETAService"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "toPincode": "={{ $fromAI('toPincode', `destination pincode`) }}",
+            "fromPincode": "={{ $fromAI('fromPincode', `source pincode`) }}",
+            "sessionID": "={{$json.body.sessionId}}"
+          },
+          "matchingColumns": [
+            "AWB_Number"
+          ],
+          "schema": [
+            {
+              "id": "fromPincode",
+              "displayName": "fromPincode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "toPincode",
+              "displayName": "toPincode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            },
+            {
+              "id": "sessionID",
+              "displayName": "sessionID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        820,
+        520
+      ],
+      "id": "4d800dcf-3d2a-4ef9-b2d7-f68b411ab8ac",
+      "name": "ETAService"
+    },
+    {
+      "parameters": {
+        "name": "ratecard_tool",
+        "description": "call this tool for the get the calculate travel rate for given source to destination pincode along with weight, height, width & length.",
+        "workflowId": {
+          "__rl": true,
+          "value": "otwk3lNIR11udE70",
+          "mode": "list",
+          "cachedResultName": "RateCard"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "fromPincode": "={{ $fromAI('fromPincode', `source pincode`, 'string') }}",
+            "toPincode": "={{ $fromAI('toPincode', `destination pincode`, 'string') }}",
+            "height": "={{ $fromAI('height', `shipment height`, 'string') }}",
+            "length": "={{ $fromAI('length', `shipment length`, 'string') }}",
+            "width": "={{ $fromAI('width', `shipment width`, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "fromPincode",
+              "displayName": "fromPincode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "toPincode",
+              "displayName": "toPincode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "height",
+              "displayName": "height",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "width",
+              "displayName": "width",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "length",
+              "displayName": "length",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        360
+      ],
+      "id": "a89db705-559b-4ca7-9fb3-336f54e95292",
+      "name": "RateCard"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "n8n",
+          "mode": "list",
+          "cachedResultName": "n8n"
+        },
+        "table": {
+          "__rl": true,
+          "value": "chat_history",
+          "mode": "list",
+          "cachedResultName": "chat_history"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "session_id": "={{ $('WebhookInput').item.json.body.sessionId }}",
+            "user_message": "={{ $('WebhookInput').item.json.body.chatInput }}",
+            "ai_response": "={{ $json.output }}",
+            "timestamp": "={{ $now }}",
+            "workflow_name": "={{ $workflow.id }}",
+            "workflow_output": "={{ $json}}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "session_id",
+              "displayName": "session_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_message",
+              "displayName": "user_message",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ai_response",
+              "displayName": "ai_response",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "metadata",
+              "displayName": "metadata",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "workflow_name",
+              "displayName": "workflow_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "workflow_output",
+              "displayName": "workflow_output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "object",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        580,
+        -180
+      ],
+      "id": "c641a6e4-80de-4261-ae9e-f6891536e619",
+      "name": "main_chat_history",
+      "credentials": {
+        "postgres": {
+          "id": "4tNYWqouAxWbiVAQ",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "effad701-5937-41ef-8317-636b92d5eecf",
+              "leftValue": "={{ $json.body.chatInput }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        80
+      ],
+      "id": "96487804-4eb2-4f4c-9bf4-06e26905382c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"output\": \"Hi! how can I help you?\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -40,
+        160
+      ],
+      "id": "9a776383-ea68-4a26-9cbb-84553667c359",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "https://serviceablity-mcp.tools-750.workers.dev/sse"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1,
+      "position": [
+        980,
+        520
+      ],
+      "id": "b29ce18b-98ed-480f-9fb4-cf0a271afcc8",
+      "name": "Serviceablity-mcp"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }}",
+        "options": {
+          "systemMessage": "=You are Prayog.io, a helpful assistant created by Prayog.\n\nYour purpose is to help users only for given tools.\nSTRICT RULES:\n1. Always answer in exactly 20 words.\n2. Use present tense with clear, natural phrasing.\n3. consider the  Current datetime is {{ $now.setZone('Asia/Kolkata').toFormat('yyyy-MM-dd HH:mm:ss') }}\n4. REJECT ANY OUTSIDE SCOPE QUERY with: \"Sorry, I can only help with services information, shipment tracking, pincode serviceability, courier rates / rate card.\"\n4.2. ALWAYS consider the Indian Demographics for User's query.\n5. Never discuss, mention, or compare with competitor companies. Only talk about Shree maruti integrated Logistics (SMILe)\n6. If an AWB number is present, return tracking details only—ignore prior context.\n7.Summarise the tool output, Ignore incase of null/empty.\n8. If a follow-up is required, ask a 10-word question only.\n9.Human question can be multi-lingual, and may contain spelling errors, incase of correction get confirmation from human first.\n10.Keep each tool’s parameters separate; do not combine or confuse parameters across different tools.\n11. SCOPE of WORK : Shipment Tracking, Pincode Serviceability, Rate Card, SMILe Services Overview\n12: Reply in the language that the user is talking.\n\nUSER / HUMAN Question is Below :\n( REJECT ANY OUTSIDE SCOPE QUERY like jokes, etc )"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        120,
+        -80
+      ],
+      "id": "bfeb7ea5-2231-43f5-aadd-1ccf49a5edf8",
+      "name": "Prayogt-AI Suppor",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "name": "SMILeRAG",
+        "description": "call this tool to get company , products and service details",
+        "workflowId": {
+          "__rl": true,
+          "value": "BkOcLFmSeB8X0KqD",
+          "mode": "list",
+          "cachedResultName": "CompanyDetailsRag"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ $json.body.chatInput }}",
+            "sessionId": "={{ $json.body.sessionId }}"
+          },
+          "matchingColumns": [
+            "query"
+          ],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2,
+      "position": [
+        820,
+        360
+      ],
+      "id": "17a05cf2-abce-42cc-9d14-4377c1365e63",
+      "name": "CompanyDetailsRAG"
+    }
+  ],
+  "pinData": {
+    "WebhookInput": [
+      {
+        "json": {
+          "headers": {
+            "host": "marut.gosmile.in",
+            "x-real-ip": "1.23.194.112",
+            "connection": "upgrade",
+            "x-forwarded-for": "1.23.194.112",
+            "content-length": "159",
+            "sec-ch-ua-platform": "\"Android\"",
+            "user-agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Mobile Safari/537.36",
+            "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
+            "content-type": "application/json",
+            "sec-ch-ua-mobile": "?1",
+            "accept": "*/*",
+            "origin": "https://shreemaruti.com",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "https://shreemaruti.com/",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-GB,en;q=0.9,hi;q=0.8,en-US;q=0.7,mr;q=0.6"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "action": "sendMessage",
+            "sessionId": "ff346d68-3a44-4bce-9ef0-35193491cfef",
+            "route": "general",
+            "chatInput": "No...411061 is my pin code",
+            "metadata": {
+              "userId": ""
+            }
+          },
+          "webhookUrl": "https://marut.gosmile.in/n8n/webhook/smile-ai",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ShipmentTracking": {
+      "ai_tool": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "JSONBody",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSONBody": {
+      "main": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WebhookInput": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MarutServiceability": {
+      "ai_tool": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ETAService": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "RateCard": {
+      "ai_tool": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Serviceablity-mcp": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Prayogt-AI Suppor": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "main_chat_history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CompanyDetailsRAG": {
+      "ai_tool": [
+        [
+          {
+            "node": "Prayogt-AI Suppor",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "timezone": "Asia/Kolkata"
+  },
+  "versionId": "e9e6cae3-4e90-4191-9e43-1af2b58681c3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "03883649a96ad19f7263559e2b819ecc5413ebc75736f9548f3252733f419860"
+  },
+  "id": "5zbYNf9NLKs5rCoL",
+  "tags": []
+}
