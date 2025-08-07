@@ -22,7 +22,7 @@ services:
     ports:
       - "${OPEN_WEBUI_PORT:-3000}:8080"
     volumes:
-      - mnt:/app/backend/data  # Use simple mount
+      - open_webui_data:/app/backend/data  # Use dedicated volume for Open WebUI
     networks:
       - app_network
 
@@ -38,7 +38,7 @@ services:
     ports:
       - "${POSTGRES_PORT:-5433}:5432"
     volumes:
-      - mnt:/var/lib/postgresql/data  # Use dedicated volume for PostgreSQL
+      - postgres_data:/var/lib/postgresql/data  # Use dedicated volume for PostgreSQL
     networks:
       - app_network
 
@@ -74,7 +74,7 @@ services:
     ports:
       - "${N8N_PORT:-5678}:5678"
     volumes:
-      - mnt:/home/node/.n8n  # N8N app data (workflows, etc.) - DB data stored in postgres_data volume
+      - n8n_data:/home/node/.n8n  # N8N app data (workflows, etc.) - DB data stored in postgres_data volume
     depends_on:
       - postgres
     networks:
@@ -90,7 +90,7 @@ services:
     environment:
       QDRANT_API_KEY: ${QDRANT_API_KEY:-difyai123456}
     volumes:
-      - mnt:/qdrant/storage  # Use simple mount
+      - qdrant_data:/qdrant/storage  # Use dedicated volume for Qdrant
     networks:
       - app_network
 
@@ -159,11 +159,13 @@ networks:
     driver: bridge
 
 volumes:
-  mnt:
-    driver: local  # Shared volume for Open WebUI and Qdrant data
+  open_webui_data:
+    driver: local  # Open WebUI backend data
   postgres_data:
-    driver: local  # PostgreSQL database files (shared by all services using PostgreSQL)
+    driver: local  # PostgreSQL database files
   n8n_data:
-    driver: local  # N8N application data (workflows, credentials, settings) - NOT database data
+    driver: local  # N8N application data (workflows, credentials, settings)
+  qdrant_data:
+    driver: local  # Qdrant vector database storage
   pipelines_data:
     driver: local  # OpenWebUI Pipelines data (pipeline configurations and custom code)
