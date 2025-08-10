@@ -671,8 +671,8 @@ For issues or questions:
 - [N8N Webhook Documentation](https://docs.n8n.io/integrations/builtin/trigger-nodes/n8n-nodes-base.webhook/)
 - [Ollama Documentation](https://ollama.ai/docs)
 
-| Badge | Description | Markdown |
-|-------|-------------|----------|
+| Badge | Description |
+|-------|-------------|
 | ![Stars](https://img.shields.io/github/stars/prayog-io/prayog-ai-stack?style=social) | GitHub Stars |
 | ![Forks](https://img.shields.io/github/forks/prayog-io/prayog-ai-stack?style=social) | GitHub Forks |
 | ![Issues](https://img.shields.io/github/issues/prayog-io/prayog-ai-stack) | Open Issues |
