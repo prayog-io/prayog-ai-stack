@@ -673,19 +673,19 @@ For issues or questions:
 
 | Badge | Description | Markdown |
 |-------|-------------|----------|
-| ![Stars](https://img.shields.io/github/stars/prayog-io/prayog-ai-stack?style=social) | GitHub Stars | `![Stars](https://img.shields.io/github/stars/prayog-io/prayog-ai-stack?style=social)` |
-| ![Forks](https://img.shields.io/github/forks/prayog-io/prayog-ai-stack?style=social) | GitHub Forks | `![Forks](https://img.shields.io/github/forks/prayog-io/prayog-ai-stack?style=social)` |
-| ![Issues](https://img.shields.io/github/issues/prayog-io/prayog-ai-stack) | Open Issues | `![Issues](https://img.shields.io/github/issues/prayog-io/prayog-ai-stack)` |
-| ![PRs](https://img.shields.io/github/issues-pr/​prayog-io/prayog-ai-stack) | Open Pull Requests | `![PRs](https://img.shields.io/github/issues-pr/prayog-io/prayog-ai-stack)` |
-| ![Downloads](https://img.shields.io/github/downloads/prayog-io/prayog-ai-stack/total) | Total Downloads (releases) | `![Downloads](https://img.shields.io/github/downloads/prayog-io/prayog-ai-stack/total)` |
-| ![Last Commit](https://img.shields.io/github/last-commit/prayog-io/prayog-ai-stack) | Last Commit | `![Last Commit](https://img.shields.io/github/last-commit/prayog-io/prayog-ai-stack)` |
-| ![Repo Size](https://img.shields.io/github/repo-size/prayog-io/prayog-ai-stack) | Repository Size | `![Repo Size](https://img.shields.io/github/repo-size/prayog-io/prayog-ai-stack)` |
-| ![License](https://img.shields.io/github/license/prayog-io/prayog-ai-stack) | License Type | `![License](https://img.shields.io/github/license/prayog-io/prayog-ai-stack)` |
-| ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=prayog-io.prayog-ai-stack) | Visitor Count | `![Visitors](https://visitor-badge.laobi.icu/badge?page_id=prayog-io.prayog-ai-stack)` |
+| ![Stars](https://img.shields.io/github/stars/prayog-io/prayog-ai-stack?style=social) | GitHub Stars |
+| ![Forks](https://img.shields.io/github/forks/prayog-io/prayog-ai-stack?style=social) | GitHub Forks |
+| ![Issues](https://img.shields.io/github/issues/prayog-io/prayog-ai-stack) | Open Issues |
+| ![PRs](https://img.shields.io/github/issues-pr/​prayog-io/prayog-ai-stack) | Open Pull Requests |
+| ![Downloads](https://img.shields.io/github/downloads/prayog-io/prayog-ai-stack/total) | Total Downloads (releases) |
+| ![Last Commit](https://img.shields.io/github/last-commit/prayog-io/prayog-ai-stack) | Last Commit |
+| ![Repo Size](https://img.shields.io/github/repo-size/prayog-io/prayog-ai-stack) | Repository Size |
+| ![License](https://img.shields.io/github/license/prayog-io/prayog-ai-stack) | License Type |
+| ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=prayog-io.prayog-ai-stack) | Visitor Count |
 
 ---
 
 **Status**: ✅ Production Ready  
 **Version**: 1.0.0  
 **Last Updated**: $(date)  
-**Maintainer**: OpenWebUI Team 
+**Maintainer**: Prayog Team 
