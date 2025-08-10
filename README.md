@@ -671,6 +671,18 @@ For issues or questions:
 - [N8N Webhook Documentation](https://docs.n8n.io/integrations/builtin/trigger-nodes/n8n-nodes-base.webhook/)
 - [Ollama Documentation](https://ollama.ai/docs)
 
+| Badge | Description | Markdown |
+|-------|-------------|----------|
+| ![Stars](https://img.shields.io/github/stars/prayog-io/prayog-ai-stack?style=social) | GitHub Stars | `![Stars](https://img.shields.io/github/stars/prayog-io/prayog-ai-stack?style=social)` |
+| ![Forks](https://img.shields.io/github/forks/prayog-io/prayog-ai-stack?style=social) | GitHub Forks | `![Forks](https://img.shields.io/github/forks/prayog-io/prayog-ai-stack?style=social)` |
+| ![Issues](https://img.shields.io/github/issues/prayog-io/prayog-ai-stack) | Open Issues | `![Issues](https://img.shields.io/github/issues/prayog-io/prayog-ai-stack)` |
+| ![PRs](https://img.shields.io/github/issues-pr/​prayog-io/prayog-ai-stack) | Open Pull Requests | `![PRs](https://img.shields.io/github/issues-pr/prayog-io/prayog-ai-stack)` |
+| ![Downloads](https://img.shields.io/github/downloads/prayog-io/prayog-ai-stack/total) | Total Downloads (releases) | `![Downloads](https://img.shields.io/github/downloads/prayog-io/prayog-ai-stack/total)` |
+| ![Last Commit](https://img.shields.io/github/last-commit/prayog-io/prayog-ai-stack) | Last Commit | `![Last Commit](https://img.shields.io/github/last-commit/prayog-io/prayog-ai-stack)` |
+| ![Repo Size](https://img.shields.io/github/repo-size/prayog-io/prayog-ai-stack) | Repository Size | `![Repo Size](https://img.shields.io/github/repo-size/prayog-io/prayog-ai-stack)` |
+| ![License](https://img.shields.io/github/license/prayog-io/prayog-ai-stack) | License Type | `![License](https://img.shields.io/github/license/prayog-io/prayog-ai-stack)` |
+| ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=prayog-io.prayog-ai-stack) | Visitor Count | `![Visitors](https://visitor-badge.laobi.icu/badge?page_id=prayog-io.prayog-ai-stack)` |
+
 ---
 
 **Status**: ✅ Production Ready  
